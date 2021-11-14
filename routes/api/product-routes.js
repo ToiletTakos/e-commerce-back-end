@@ -9,8 +9,10 @@ router.get('/', (req, res) => {
   // be sure to include its associated Category and Tag data
   Product.findAll({
     include: [Category, Tag]
-  }).then(allProduct => {
-    res.json(allProduct);
+  }).then(allProduct => res.json(allProduct))
+  .catch(err => {
+    console.log(err);
+    res.status(500).json(err)
   });
 });
 
@@ -18,6 +20,20 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
+  Product.findOne({
+    where: {
+      id: req.params.id
+    },
+    include: [Category, Tag]
+  }).then(oneProduct => {
+    if(!oneProduct) {
+      res.status(404).json({ message: 'No product found with that id'});
+    }
+    res.json(oneProduct);
+  }).catch(err => {
+    console.log(err);
+    res.status(500).json(err);
+  });
 });
 
 // create new product
@@ -96,6 +112,19 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   // delete one product by its `id` value
+  Product.destroy({
+    where: {
+      id: req.params.id
+    }
+  }).then(oneProduct => {
+    if(!oneProduct) {
+      res.status(404).json({ message: 'No product found with that id'});
+    }
+    res.json(oneProduct);
+  }).catch(err => {
+    console.log(err);
+    res.status(500).json(err);
+  });
 });
 
 module.exports = router;
