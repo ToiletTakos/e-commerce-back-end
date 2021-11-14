@@ -28,6 +28,7 @@ router.get('/:id', (req, res) => {
   }).then(oneProduct => {
     if(!oneProduct) {
       res.status(404).json({ message: 'No product found with that id'});
+      return;
     }
     res.json(oneProduct);
   }).catch(err => {
@@ -119,6 +120,7 @@ router.delete('/:id', (req, res) => {
   }).then(oneProduct => {
     if(!oneProduct) {
       res.status(404).json({ message: 'No product found with that id'});
+      return;
     }
     res.json(oneProduct);
   }).catch(err => {
