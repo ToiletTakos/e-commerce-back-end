@@ -21,14 +21,23 @@ router.get('/:id', (req, res) => {
     where: {
       id: req.params.id
     },
-    include: [ProductTag, Product]
+    include: [Product]
+  }).then(oneTag => {
+    if(!oneTag) {
+      res.status(404).json({ message: 'No category found at that id'});
+      return;
+    }
+    res.json(oneTag)
+  }).catch(err => {
+    console.log(err);
+    res.status(500).json(err);
   })
 });
 
 router.post('/', (req, res) => {
   // create a new tag
   Tag.create({
-    tag_name: req.bpdy.tag_name
+    tag_name: req.body.tag_name
   }).then(newTag => res.json(newTag))
   .catch(err => {
     console.log(err);
@@ -39,6 +48,7 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
   // update a tag's name by its `id` value
   Tag.update(req.body, {
+    individualHooks: true,
     where: {
       id: req.params.id
     }
